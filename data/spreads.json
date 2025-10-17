@@ -1,0 +1,125 @@
+[
+  {
+    "id": "single_card",
+    "name": "单牌解读",
+    "nameEn": "Single Card",
+    "description": "单牌解读牌阵可以用来探索当前情况，非常适合想要了解自己当前的财富状况并希望增加收入的人！",
+    "tags": ["关系分析", "他人感受", "关系发展"],
+    "cardCount": 1,
+    "positions": [
+      {
+        "position": 1,
+        "name": "当下启示",
+        "description": "针对问题的当前状况"
+      }
+    ],
+    "usageCount": 147882,
+    "hotQuestions": [
+      "我有哪些财富机遇？",
+      "我适合通过什么方式赚钱？",
+      "有哪些潜在的风险会影响我的财富中枢？"
+    ],
+    "image": "/frontend/assets/images/spreads/single.png"
+  },
+  {
+    "id": "three_card",
+    "name": "三牌阵",
+    "nameEn": "Three Card Spread",
+    "description": "适用辩证性、需要看清事情原因及发展的问题",
+    "tags": ["适用辩证", "解决方案", "纵观局势"],
+    "cardCount": 3,
+    "positions": [
+      {
+        "position": 1,
+        "name": "过去/原因",
+        "description": "事情的起源或过去影响"
+      },
+      {
+        "position": 2,
+        "name": "现在/现状",
+        "description": "当前的状态和情况"
+      },
+      {
+        "position": 3,
+        "name": "未来/建议",
+        "description": "未来的发展趋势或建议"
+      }
+    ],
+    "usageCount": 167882,
+    "hotQuestions": [
+      "我们的关系会往什么方向发展？",
+      "我该如何改善当前的处境？"
+    ],
+    "image": "/frontend/assets/images/spreads/three.png"
+  },
+  {
+    "id": "financial_machine",
+    "name": "财富机遇牌阵",
+    "nameEn": "Financial Opportunity Spread",
+    "description": "财富机遇牌阵可以用来探索当前财富机遇，并希望提升收入的人！通过了解自己已拥有的财富潜力，以及影响你赚钱的因素，来更好的抓住赚钱机会～",
+    "tags": ["关系分析", "他人感受", "关系发展"],
+    "cardCount": 3,
+    "positions": [
+      {
+        "position": 1,
+        "name": "财富机遇",
+        "description": "当前可以把握的财富机会"
+      },
+      {
+        "position": 2,
+        "name": "阻碍因素",
+        "description": "影响财富增长的因素"
+      },
+      {
+        "position": 3,
+        "name": "行动建议",
+        "description": "如何更好地把握机会"
+      }
+    ],
+    "usageCount": 63782,
+    "hotQuestions": [
+      "我有哪些财富机遇？",
+      "我适合通过什么方式赚钱？",
+      "有哪些潜在的风险会影响我的财富中枢？"
+    ],
+    "image": "/frontend/assets/images/spreads/financial.png"
+  },
+  {
+    "id": "love_destiny",
+    "name": "真命天子牌阵",
+    "nameEn": "True Love Spread",
+    "description": "缘分已注定，缘浅或缘深，这个牌阵通过抽牌来看你和另一半的特质与关系发展",
+    "tags": ["缘分注定", "特质分析", "未来发展"],
+    "cardCount": 4,
+    "positions": [
+      {
+        "position": 1,
+        "name": "你的特质",
+        "description": "你在感情中展现的特质"
+      },
+      {
+        "position": 2,
+        "name": "对方特质",
+        "description": "对方的性格和特点"
+      },
+      {
+        "position": 3,
+        "name": "关系现状",
+        "description": "当前关系的状态"
+      },
+      {
+        "position": 4,
+        "name": "未来走向",
+        "description": "关系的发展方向"
+      }
+    ],
+    "usageCount": 93782,
+    "hotQuestions": [
+      "我有真命天子吗？",
+      "我适合通过什么公众式牌阵？",
+      "有哪些生在任何风险会影响我的财富中枢？"
+    ],
+    "image": "/frontend/assets/images/spreads/love.png"
+  }
+]
+

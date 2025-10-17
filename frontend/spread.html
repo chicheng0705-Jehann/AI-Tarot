@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>牌阵详情</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/spread.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+      <div class="navbar-back"></div>
+      <div class="navbar-title">牌阵详情</div>
+      <div class="navbar-action"></div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+      <!-- 牌阵头部 -->
+      <div class="spread-detail-header">
+        <div class="spread-banner">
+          <div class="spread-banner-placeholder" id="spreadBanner">
+            牌阵示意图
+          </div>
+        </div>
+        
+        <div class="spread-info">
+          <h1 class="spread-name" id="spreadName">加载中...</h1>
+          <div class="spread-meta">
+            <span class="spread-tags-label" id="spreadTags"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 牌阵介绍 -->
+      <div class="spread-section">
+        <h3 class="section-subtitle">牌阵介绍</h3>
+        <p class="spread-intro" id="spreadIntro">加载中...</p>
+      </div>
+
+      <!-- 测过人数 -->
+      <div class="spread-section">
+        <h3 class="section-subtitle">测过人数</h3>
+        <p class="test-count" id="testCount">
+          <span class="count-number">0</span> 人已测过
+        </p>
+      </div>
+
+      <!-- 热门问题 -->
+      <div class="spread-section">
+        <h3 class="section-subtitle">大家都在问</h3>
+        <div class="hot-questions" id="hotQuestions">
+          <!-- 动态加载热门问题 -->
+        </div>
+      </div>
+
+      <!-- 底部操作按钮 -->
+      <div class="spread-actions">
+        <button class="btn btn-primary btn-large btn-block" id="startBtn">
+          立即使用
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/spread.js"></script>
+</body>
+</html>
+

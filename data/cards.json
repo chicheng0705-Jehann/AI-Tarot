@@ -1,0 +1,53 @@
+[
+  {
+    "id": "0",
+    "name": "愚者",
+    "nameEn": "The Fool",
+    "type": "major",
+    "uprightKeywords": ["新的开始", "自由", "冒险", "天真"],
+    "reversedKeywords": ["鲁莽", "冒失", "缺乏计划", "愚蠢"],
+    "description": "愚者代表新的开始、冒险精神和无限可能。",
+    "image": "/frontend/assets/images/cards/00_fool.jpg"
+  },
+  {
+    "id": "1",
+    "name": "魔术师",
+    "nameEn": "The Magician",
+    "type": "major",
+    "uprightKeywords": ["创造力", "技能", "力量", "行动"],
+    "reversedKeywords": ["操纵", "欺骗", "浪费才能"],
+    "description": "魔术师象征着创造力、技能和将想法变为现实的能力。",
+    "image": "/frontend/assets/images/cards/01_magician.jpg"
+  },
+  {
+    "id": "2",
+    "name": "女祭司",
+    "nameEn": "The High Priestess",
+    "type": "major",
+    "uprightKeywords": ["直觉", "神秘", "潜意识", "智慧"],
+    "reversedKeywords": ["隐瞒秘密", "缺乏洞察力"],
+    "description": "女祭司代表直觉、内在智慧和神秘知识。",
+    "image": "/frontend/assets/images/cards/02_high_priestess.jpg"
+  },
+  {
+    "id": "3",
+    "name": "皇后",
+    "nameEn": "The Empress",
+    "type": "major",
+    "uprightKeywords": ["丰饶", "母性", "自然", "创造"],
+    "reversedKeywords": ["依赖", "空虚", "创造力受阻"],
+    "description": "皇后象征母性、丰饶和自然的创造力。",
+    "image": "/frontend/assets/images/cards/03_empress.jpg"
+  },
+  {
+    "id": "4",
+    "name": "皇帝",
+    "nameEn": "The Emperor",
+    "type": "major",
+    "uprightKeywords": ["权威", "结构", "控制", "父亲形象"],
+    "reversedKeywords": ["暴政", "僵化", "失控"],
+    "description": "皇帝代表权威、秩序和稳定的结构。",
+    "image": "/frontend/assets/images/cards/04_emperor.jpg"
+  }
+]
+

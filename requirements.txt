@@ -1,0 +1,15 @@
+# LangChain 核心库
+langchain==0.1.0
+langchain-google-genai==0.0.6
+
+# Google Gemini API
+google-generativeai==0.3.2
+
+# 向量存储和嵌入
+faiss-cpu==1.7.4
+sentence-transformers==2.2.2
+
+# 工具库
+python-dotenv==1.0.0
+pydantic==2.5.0
+

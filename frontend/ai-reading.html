@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>准了 - AI解读</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/ai-reading.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+      <div class="navbar-back"></div>
+      <div class="navbar-title">塔罗</div>
+      <div class="navbar-action"></div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+      <!-- AI头像区域 -->
+      <div class="ai-avatar-section">
+        <div class="ai-large-avatar">
+          <span class="avatar-emoji">🔮</span>
+        </div>
+        <h2 class="ai-name">准了塔罗师</h2>
+        <p class="ai-subtitle">帮你解答/常见问题/答疑解惑/带给你宽慰/帮助</p>
+      </div>
+
+      <!-- 大输入框区域 -->
+      <div class="input-section">
+        <div class="large-input-wrapper">
+          <textarea 
+            class="large-input" 
+            id="questionInput" 
+            placeholder="今天有什么想问的吗？"
+            rows="6"
+            maxlength="200"
+          ></textarea>
+          <div class="char-count">
+            <span id="charCount">0</span>/200
+          </div>
+        </div>
+        
+        <!-- 发送按钮 -->
+        <button class="btn-submit" id="submitBtn">
+          <span>问询</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 快捷问题提示 -->
+      <div class="quick-hints">
+        <p class="hint-title">你可能想问我</p>
+        <div class="hints-grid" id="hintsGrid">
+          <!-- 动态加载快捷问题 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="tabbar">
+      <a href="/frontend/index.html" class="tabbar-item" data-tab="home">
+        <div class="tabbar-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23757575%22><path d=%22M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z%22/></svg>');"></div>
+        <span class="tabbar-label">首页</span>
+      </a>
+      
+      <a href="#" class="tabbar-item" data-tab="discover">
+        <div class="tabbar-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23757575%22><path d=%22M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z%22/></svg>');"></div>
+        <span class="tabbar-label">发现</span>
+      </a>
+      
+      <a href="/frontend/ai-reading.html" class="tabbar-item active" data-tab="ai">
+        <div class="tabbar-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%237C4DFF%22><path d=%22M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9 12H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z%22/></svg>');"></div>
+        <span class="tabbar-label">AI</span>
+      </a>
+      
+      <a href="#" class="tabbar-item" data-tab="community">
+        <div class="tabbar-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23757575%22><path d=%22M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z%22/></svg>');"></div>
+        <span class="tabbar-label">社区</span>
+      </a>
+      
+      <a href="#" class="tabbar-item" data-tab="profile">
+        <div class="tabbar-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23757575%22><path d=%22M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z%22/></svg>');"></div>
+        <span class="tabbar-label">我的</span>
+      </a>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/ai-reading.js"></script>
+</body>
+</html>

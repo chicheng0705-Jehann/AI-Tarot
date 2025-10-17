@@ -1,0 +1,205 @@
+/* 塔罗页样式 */
+
+.ai-tarot-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-xl);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.ai-avatar {
+  flex-shrink: 0;
+}
+
+.avatar-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar-text {
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.ai-info {
+  flex: 1;
+}
+
+.ai-info h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.ai-info p {
+  font-size: 12px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.btn-consult {
+  flex-shrink: 0;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: white;
+  color: var(--primary-color);
+  border: none;
+  border-radius: var(--radius-round);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-consult:active {
+  transform: scale(0.95);
+}
+
+.section-header {
+  margin: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spread-list {
+  padding: 0 var(--spacing-md) var(--spacing-xl);
+}
+
+.spread-card {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.spread-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.spread-card:active {
+  transform: translateY(0);
+}
+
+.spread-image {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.spread-placeholder {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.spread-content {
+  padding: var(--spacing-md);
+}
+
+.spread-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.spread-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spread-count {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  margin-left: var(--spacing-sm);
+}
+
+.spread-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-md);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.spread-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.spread-tag {
+  padding: 4px 10px;
+  background-color: rgba(124, 77, 255, 0.08);
+  color: var(--primary-color);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+
+/* 加载骨架屏 */
+.skeleton-card {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-content {
+  padding: var(--spacing-md);
+}
+
+.skeleton-line {
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+.skeleton-line.long {
+  width: 100%;
+}
+

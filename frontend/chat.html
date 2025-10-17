@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>准了塔罗师</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+      <div class="navbar-back"></div>
+      <div class="navbar-title">准了塔罗师</div>
+      <div class="navbar-action" id="historyBtn">
+        <span>合上道具 0</span>
+      </div>
+    </div>
+
+    <!-- 聊天内容区 -->
+    <div class="chat-container" id="chatContainer">
+      <!-- 消息列表 -->
+      <div class="messages-list" id="messagesList">
+        <!-- 欢迎消息 -->
+        <div class="message-item ai-message">
+          <div class="message-avatar">
+            <div class="avatar-circle">
+              <span style="font-size: 20px;">🔮</span>
+            </div>
+          </div>
+          <div class="message-content">
+            <div class="message-bubble">
+              <p>Hi，我是准了AI塔罗师～</p>
+              <p>请告诉我你想咨询的问题，我会为你挑选合适的牌阵并进行解读。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 输入区域 -->
+    <div class="chat-input-area" id="inputArea">
+      <!-- 快捷问题（初始状态显示） -->
+      <div class="quick-questions" id="quickQuestions">
+        <div class="quick-question-label">你可能想问我</div>
+        <div class="quick-questions-grid" id="quickQuestionsGrid">
+          <!-- 动态加载快捷问题 -->
+        </div>
+      </div>
+
+      <!-- 输入框区域 -->
+      <div class="input-wrapper">
+        <div class="input-container">
+          <textarea 
+            class="chat-input" 
+            id="chatInput" 
+            placeholder="请输入你的问题"
+            rows="1"
+            maxlength="200"
+          ></textarea>
+          <button class="send-button" id="sendButton">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="input-hint">内容由AI大模型生成，请注意甄别，切勿为决策依据</div>
+      </div>
+    </div>
+
+    <!-- 牌阵选择器浮层 -->
+    <div class="modal-overlay" id="spreadSelector" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>选择牌阵</h3>
+          <button class="modal-close" onclick="closeSpreadSelector()">×</button>
+        </div>
+        <div class="modal-body" id="spreadSelectorList">
+          <!-- 动态加载牌阵列表 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 抽牌动画浮层 -->
+    <div class="modal-overlay" id="drawingModal" style="display: none;">
+      <div class="drawing-content">
+        <div class="drawing-animation">
+          <div class="card-stack">
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+          </div>
+          <p class="drawing-text">正在为你抽牌...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>
+
