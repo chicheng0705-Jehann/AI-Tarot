@@ -97,8 +97,8 @@ async function loadSpreadDetail() {
       return;
     }
     
-    // 加载牌阵数据
-    const spreads = await loadJSON('../data/spreads.json');
+    // 加载牌阵数据（添加时间戳避免缓存）
+    const spreads = await loadJSON(`../data/spreads.json?t=${Date.now()}`);
     const spread = spreads.find(s => s.id === spreadId);
     
     if (!spread) {

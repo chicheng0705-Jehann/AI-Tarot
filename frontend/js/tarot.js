@@ -51,7 +51,8 @@ async function loadSpreads() {
   try {
     renderSkeleton();
     
-    const data = await loadJSON('../data/spreads.json');
+    // 添加时间戳避免缓存
+    const data = await loadJSON(`../data/spreads.json?t=${Date.now()}`);
     spreadsData = data;
     
     // 模拟网络延迟

@@ -27,9 +27,9 @@ async function initChat() {
       chatState.currentSpreadId = spreadId;
     }
     
-    // 加载数据
-    spreadsData = await loadJSON('../data/spreads.json');
-    quickQuestionsData = await loadJSON('../data/quick-questions.json');
+    // 加载数据（添加时间戳避免缓存）
+    spreadsData = await loadJSON(`../data/spreads.json?t=${Date.now()}`);
+    quickQuestionsData = await loadJSON(`../data/quick-questions.json?t=${Date.now()}`);
     
     // 数据加载完成后，渲染界面
     // 渲染欢迎消息（包含大头像、开场白、预置问题）

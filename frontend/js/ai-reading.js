@@ -30,8 +30,11 @@ const modeConfig = {
 // 初始化
 async function init() {
   try {
+    console.log('开始初始化AI咨询页...');
+    
     // 加载快捷问题
     quickQuestionsData = await loadJSON('../data/quick-questions.json');
+    console.log('快捷问题数据加载成功:', quickQuestionsData);
     
     // 绑定输入框字数统计
     const input = document.getElementById('questionInput');
@@ -69,20 +72,33 @@ async function init() {
 
 // 切换模式菜单
 function toggleModeMenu() {
+  console.log('=== 切换模式菜单 ===');
+  
   const modeMenu = document.getElementById('modeMenu');
+  console.log('- modeMenu元素:', modeMenu);
+  
   if (modeMenu) {
-    modeMenu.style.display = modeMenu.style.display === 'none' ? 'block' : 'none';
+    const currentDisplay = modeMenu.style.display;
+    console.log('- 当前显示状态:', currentDisplay);
+    
+    const newDisplay = currentDisplay === 'none' ? 'block' : 'none';
+    modeMenu.style.display = newDisplay;
+    
+    console.log('- 新显示状态:', newDisplay);
+    console.log('✅ 菜单状态已切换');
+  } else {
+    console.error('❌ 找不到modeMenu元素！');
   }
 }
 
 // 选择模式
-function selectMode(mode) {
+function selectMode(mode, closeMenu = true) {
   console.log('埋点: 选择模式', { mode });
   
   // 星盘和八字未开放
   if (mode === 'astro' || mode === 'bazi') {
     showToast('功能开放中，敬请期待');
-    toggleModeMenu();
+    if (closeMenu) toggleModeMenu();
     return;
   }
   
@@ -102,8 +118,8 @@ function selectMode(mode) {
   });
   document.querySelector(`[data-mode="${mode}"]`)?.classList.add('active');
   
-  // 关闭菜单
-  toggleModeMenu();
+  // 关闭菜单（如果需要）
+  if (closeMenu) toggleModeMenu();
 }
 
 // 显示历史记录
@@ -114,21 +130,44 @@ function showHistory() {
 
 // 切换热门问题浮层
 function toggleHotQuestions() {
+  console.log('=== 点击热门提问按钮 ===');
+  
   const overlay = document.getElementById('hotQuestionsOverlay');
   const questionsList = document.getElementById('questionsList');
   
-  if (!questionsList || !overlay) return;
+  console.log('浮层元素检查:');
+  console.log('- overlay:', overlay);
+  console.log('- questionsList:', questionsList);
   
-  // 第一次打开时加载数据
-  if (questionsList.innerHTML.trim() === '') {
-    renderHotQuestions();
+  if (!questionsList || !overlay) {
+    console.error('❌ 找不到浮层元素！');
+    console.log('检查HTML中是否存在 id="hotQuestionsOverlay" 和 id="questionsList"');
+    return;
   }
   
+  // 检查数据是否已加载
+  console.log('数据检查:');
+  console.log('- quickQuestionsData:', quickQuestionsData);
+  console.log('- 数据为空？', !quickQuestionsData || Object.keys(quickQuestionsData).length === 0);
+  
+  if (!quickQuestionsData || Object.keys(quickQuestionsData).length === 0) {
+    console.error('❌ 快捷问题数据未加载！');
+    showToast('数据加载中，请稍候...');
+    return;
+  }
+  
+  console.log('✅ 数据检查通过，开始渲染问题列表');
+  
+  // 渲染问题列表
+  renderHotQuestions();
+  
+  console.log('设置浮层显示样式');
   overlay.style.display = 'flex';
   
   // 添加动画
   setTimeout(() => {
     overlay.classList.add('show');
+    console.log('✅ 浮层动画完成');
   }, 10);
 }
 
@@ -146,7 +185,12 @@ function closeHotQuestions() {
 // 渲染热门问题
 function renderHotQuestions() {
   const container = document.getElementById('questionsList');
-  if (!container) return;
+  if (!container) {
+    console.error('找不到questionsList容器');
+    return;
+  }
+  
+  console.log('开始渲染热门问题，quickQuestionsData:', quickQuestionsData);
   
   // 获取问题列表（过滤掉标题类文本）
   let questions = quickQuestionsData.default || [];
@@ -156,18 +200,25 @@ function renderHotQuestions() {
     questions = quickQuestionsData.ai_page.slice(1);
   }
   
+  console.log('使用的问题列表:', questions);
+  
   if (questions.length === 0) {
+    console.warn('问题列表为空');
     container.innerHTML = '<p style="text-align: center; padding: 20px; color: #999;">暂无热门问题</p>';
     return;
   }
   
-  container.innerHTML = questions.map((q, index) => `
+  const html = questions.map((q, index) => `
     <div class="question-item" onclick="selectHotQuestion('${escapeHtml(q)}')">
       <span class="question-icon">❓</span>
       <span class="question-text">${q}</span>
       <span class="question-arrow">›</span>
     </div>
   `).join('');
+  
+  console.log('生成的HTML:', html);
+  container.innerHTML = html;
+  console.log('热门问题渲染完成');
 }
 
 // 选择热门问题
@@ -313,9 +364,36 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// 覆盖goBack函数，AI咨询页返回到首页
+window.goBack = function() {
+  console.log('AI咨询页：返回首页');
+  window.location.href = '/frontend/index.html';
+};
+
 // 页面初始化
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('=== AI咨询页面开始初始化 ===');
+  
+  // 检查关键元素是否存在
+  const modeSelector = document.getElementById('modeSelector');
+  const modeMenu = document.getElementById('modeMenu');
+  const hotQuestionsBtn = document.getElementById('hotQuestionsBtn');
+  
+  console.log('关键元素检查:');
+  console.log('- modeSelector:', modeSelector);
+  console.log('- modeMenu:', modeMenu);
+  console.log('- hotQuestionsBtn:', hotQuestionsBtn);
+  
   setActiveTab('ai');
   init();
-  selectMode('auto'); // 默认自动匹配模式
+  
+  // 确保菜单初始状态是关闭的
+  if (modeMenu) {
+    modeMenu.style.display = 'none';
+    console.log('强制设置菜单为关闭状态');
+  }
+  
+  selectMode('auto', false); // 默认自动匹配模式（不关闭菜单，因为菜单本来就是关闭的）
+  
+  console.log('=== AI咨询页面初始化完成 ===');
 });
