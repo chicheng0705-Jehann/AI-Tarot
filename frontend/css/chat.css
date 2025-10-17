@@ -272,13 +272,17 @@ body {
   font-weight: 600;
 }
 
-/* 欢迎消息样式 */
-.welcome-message {
-  text-align: center;
-  margin: var(--spacing-xl) 0;
+/* 欢迎容器（包含大头像+气泡） */
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
 }
 
-.welcome-avatar {
+/* 大头像（居中） */
+.welcome-avatar-large {
   display: flex;
   justify-content: center;
   margin-bottom: var(--spacing-lg);
@@ -295,32 +299,56 @@ body {
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 
-.welcome-bubble {
-  text-align: center;
-  max-width: 80%;
-  margin: 0 auto;
+/* 气泡容器（包含开场白和预置问题） */
+.welcome-bubble-container {
+  width: 100%;
+  max-width: 600px;
+  background-color: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
 }
 
-/* 快捷问题在气泡内 */
+/* 开场白 */
+.welcome-greeting {
+  text-align: center;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.welcome-greeting p {
+  margin: 0;
+  padding: var(--spacing-xs) 0;
+}
+
+/* 分隔线 */
+.welcome-divider {
+  height: 1px;
+  background-color: var(--divider);
+  margin: var(--spacing-lg) 0;
+}
+
+/* 预置问题标题 */
 .quick-title {
   font-size: 13px;
   color: var(--text-secondary);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
 }
 
+/* 预置问题按钮 */
 .quick-questions-in-bubble {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .quick-question-btn-bubble {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   background-color: var(--bg-secondary);
   border: 1px solid var(--divider);
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-primary);
   text-align: left;
   cursor: pointer;
@@ -337,6 +365,45 @@ body {
   transform: scale(0.98);
 }
 
+/* "继续"按钮容器 */
+.continue-button-container {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 750px;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: linear-gradient(to top, white 80%, transparent);
+  z-index: 90;
+  padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+}
+
+.btn-continue {
+  min-width: 200px;
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-round);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-continue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-continue:active {
+  transform: translateY(0);
+}
+
 /* 输入区域 */
 .chat-input-area {
   position: fixed;
@@ -349,6 +416,19 @@ body {
   border-top: 1px solid var(--divider);
   z-index: 90;
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 输入框禁用状态 */
+.chat-input:disabled {
+  background-color: var(--bg-secondary);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.send-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .input-wrapper {

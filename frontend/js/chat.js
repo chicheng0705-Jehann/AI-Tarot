@@ -8,6 +8,8 @@ const chatState = {
   sessionId: null,
   isWaitingResponse: false,
   mode: 'default', // default, spread_selected, drawing, reading
+  currentReadings: [], // 当前解读段落列表
+  currentReadingIndex: 0, // 当前解读段落索引
 };
 
 let spreadsData = [];
@@ -30,11 +32,8 @@ async function initChat() {
     quickQuestionsData = await loadJSON('../data/quick-questions.json');
     
     // 数据加载完成后，渲染界面
-    // 根据是否有spreadId渲染不同的欢迎消息
+    // 渲染欢迎消息（包含大头像、开场白、预置问题）
     renderWelcomeMessage();
-    
-    // 渲染快捷问题
-    renderQuickQuestions();
     
     // 如果有预填问题，只填充不提交
     if (question && mode === 'prefill') {
@@ -49,7 +48,7 @@ async function initChat() {
   }
 }
 
-// 渲染欢迎消息
+// 渲染欢迎消息（大头像+开场白+预置问题，都在一个结构内）
 function renderWelcomeMessage() {
   const messagesList = document.getElementById('messagesList');
   if (!messagesList) return;
@@ -73,34 +72,51 @@ function renderWelcomeMessage() {
     welcomeText = 'Hi，我是准了AI塔罗师～\n\n请告诉我你想咨询的问题，我会为你挑选合适的牌阵并进行解读。';
   }
   
-  // 添加欢迎消息
-  const messageDiv = document.createElement('div');
-  messageDiv.className = 'message-item ai-message welcome-message';
+  // 创建欢迎区域容器
+  const welcomeContainer = document.createElement('div');
+  welcomeContainer.className = 'welcome-container';
+  welcomeContainer.id = 'welcomeContainer';
   
-  messageDiv.innerHTML = `
-    <div class="welcome-avatar">
-      <div class="avatar-circle-large">
-        <span style="font-size: 48px;">🔮</span>
-      </div>
-    </div>
-    <div class="message-content">
-      <div class="message-bubble welcome-bubble">
-        <p>${welcomeText.replace(/\n/g, '</p><p>')}</p>
-      </div>
+  // 大头像
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = 'welcome-avatar-large';
+  avatarDiv.innerHTML = `
+    <div class="avatar-circle-large">
+      <span style="font-size: 48px;">🔮</span>
     </div>
   `;
   
-  messagesList.appendChild(messageDiv);
-}
-
-// 渲染快捷问题（在气泡内）
-function renderQuickQuestions() {
-  const messagesList = document.getElementById('messagesList');
-  if (!messagesList) return;
+  // 气泡容器（包含开场白和预置问题）
+  const bubbleContainer = document.createElement('div');
+  bubbleContainer.className = 'welcome-bubble-container';
   
+  // 开场白
+  const greetingDiv = document.createElement('div');
+  greetingDiv.className = 'welcome-greeting';
+  welcomeText.split('\n').forEach(line => {
+    if (line.trim()) {
+      const p = document.createElement('p');
+      p.textContent = line;
+      greetingDiv.appendChild(p);
+    }
+  });
+  
+  // 分隔线
+  const divider = document.createElement('div');
+  divider.className = 'welcome-divider';
+  
+  // 预置问题标题
+  const questionTitle = document.createElement('p');
+  questionTitle.className = 'quick-title';
+  questionTitle.textContent = '你可能想问我';
+  
+  // 预置问题按钮
+  const questionsDiv = document.createElement('div');
+  questionsDiv.className = 'quick-questions-in-bubble';
+  questionsDiv.id = 'quickQuestionsInBubble';
+  
+  // 获取快捷问题列表
   let questions = quickQuestionsData.default || [];
-  
-  // 如果有指定牌阵，使用该牌阵的快捷问题
   if (chatState.currentSpreadId && quickQuestionsData.spread_specific) {
     const spreadQuestions = quickQuestionsData.spread_specific[chatState.currentSpreadId];
     if (spreadQuestions) {
@@ -108,33 +124,7 @@ function renderQuickQuestions() {
     }
   }
   
-  // 创建快捷问题气泡
-  const quickQuestionsDiv = document.createElement('div');
-  quickQuestionsDiv.className = 'message-item ai-message';
-  quickQuestionsDiv.id = 'quickQuestionsMessage';
-  
-  const avatarDiv = document.createElement('div');
-  avatarDiv.className = 'message-avatar';
-  avatarDiv.innerHTML = `
-    <div class="avatar-circle">
-      <span style="font-size: 20px;">🔮</span>
-    </div>
-  `;
-  
-  const contentDiv = document.createElement('div');
-  contentDiv.className = 'message-content';
-  
-  const bubbleDiv = document.createElement('div');
-  bubbleDiv.className = 'message-bubble';
-  
-  const titleP = document.createElement('p');
-  titleP.className = 'quick-title';
-  titleP.textContent = '你可能想问我';
-  
-  const questionsContainer = document.createElement('div');
-  questionsContainer.className = 'quick-questions-in-bubble';
-  
-  // 为每个问题创建按钮
+  // 创建快捷问题按钮
   questions.forEach(q => {
     const btn = document.createElement('button');
     btn.className = 'quick-question-btn-bubble';
@@ -142,20 +132,24 @@ function renderQuickQuestions() {
     btn.onclick = function() {
       fillQuestion(q);
     };
-    questionsContainer.appendChild(btn);
+    questionsDiv.appendChild(btn);
   });
   
-  bubbleDiv.appendChild(titleP);
-  bubbleDiv.appendChild(questionsContainer);
-  contentDiv.appendChild(bubbleDiv);
-  quickQuestionsDiv.appendChild(avatarDiv);
-  quickQuestionsDiv.appendChild(contentDiv);
+  // 组装气泡内容
+  bubbleContainer.appendChild(greetingDiv);
+  bubbleContainer.appendChild(divider);
+  bubbleContainer.appendChild(questionTitle);
+  bubbleContainer.appendChild(questionsDiv);
   
-  messagesList.appendChild(quickQuestionsDiv);
+  // 组装欢迎容器
+  welcomeContainer.appendChild(avatarDiv);
+  welcomeContainer.appendChild(bubbleContainer);
+  
+  messagesList.appendChild(welcomeContainer);
   scrollToBottom();
 }
 
-// 填充问题到输入框（不自动提交）
+// 填充问题到输入框（不自动提交，不隐藏预置问题）
 function fillQuestion(question) {
   console.log('埋点: 点击快捷问题（填充）', { question });
   
@@ -169,11 +163,7 @@ function fillQuestion(question) {
     input.style.height = Math.min(input.scrollHeight, 100) + 'px';
   }
   
-  // 隐藏快捷问题消息
-  const quickMsg = document.getElementById('quickQuestionsMessage');
-  if (quickMsg) {
-    quickMsg.style.display = 'none';
-  }
+  // 注意：不隐藏预置问题，只有提交后才隐藏
 }
 
 // 发送用户消息
@@ -188,10 +178,10 @@ function sendUserMessage(text) {
     return;
   }
   
-  // 隐藏快捷问题消息
-  const quickMsg = document.getElementById('quickQuestionsMessage');
-  if (quickMsg) {
-    quickMsg.style.display = 'none';
+  // 隐藏整个欢迎容器（大头像+开场白+预置问题）
+  const welcomeContainer = document.getElementById('welcomeContainer');
+  if (welcomeContainer) {
+    welcomeContainer.style.display = 'none';
   }
   
   // 添加用户消息
@@ -250,8 +240,11 @@ async function matchSpreadAndRespond(question) {
   } catch (error) {
     console.error('匹配牌阵失败:', error);
     removeTypingIndicator();
-    addMessage('ai', '抱歉，系统出现了一些问题，请稍后重试。');
+    // 错误消息需要流式输出
+    await typewriterMessage('抱歉，系统出现了一些问题，请稍后重试。');
     chatState.isWaitingResponse = false;
+    showInputArea();
+    enableInput();
   }
 }
 
@@ -328,11 +321,25 @@ function addSpreadMatchMessage(spread) {
   const p1 = document.createElement('p');
   p1.innerHTML = `针对你的问题，我为你选择的牌阵是【<strong>${spread.name}</strong>】`;
   
+  // 牌阵图片
+  const imgDiv = document.createElement('div');
+  imgDiv.className = 'spread-match-image';
+  imgDiv.innerHTML = `
+    <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 12px 0;">
+      <div style="text-align: center; color: white;">
+        <div style="font-size: 48px; margin-bottom: 8px;">🔮</div>
+        <div style="font-size: 16px; font-weight: 600;">${spread.name}</div>
+        <div style="font-size: 12px; margin-top: 4px; opacity: 0.9;">${spread.cardCount || 3} 张牌</div>
+      </div>
+    </div>
+  `;
+  
   const p2 = document.createElement('p');
   p2.className = 'spread-match-desc';
   p2.textContent = spread.description;
   
   bubbleDiv.appendChild(p1);
+  bubbleDiv.appendChild(imgDiv);
   bubbleDiv.appendChild(p2);
   
   // 创建"换个牌阵"按钮
@@ -597,63 +604,110 @@ function generateMockReading(drawResult, spread) {
   return readings;
 }
 
-// 添加流式消息
+// 添加流式消息（交互式分段输出）
 async function addStreamingMessage(readings) {
-  for (const reading of readings) {
-    const fullText = `**${reading.title}**\n\n${reading.content}`;
-    
-    // 模拟流式输出效果
-    await typewriterEffect(fullText);
-    
-    // 每段解读之间暂停
-    await new Promise(resolve => setTimeout(resolve, 500));
-  }
+  chatState.currentReadings = readings;
+  chatState.currentReadingIndex = 0;
   
-  // 解读完成，可以继续提问
-  addMessage('ai', '以上就是我为你的解读。如果你还有其他问题，欢迎继续咨询。');
-  
-  chatState.isWaitingResponse = false;
+  // 开始输出第一段
+  await outputNextReading();
 }
 
-// 打字机效果
-async function typewriterEffect(text) {
+// 输出下一段解读
+async function outputNextReading() {
+  const readings = chatState.currentReadings;
+  const index = chatState.currentReadingIndex;
+  
+  if (index >= readings.length) {
+    // 所有解读已完成
+    await typewriterMessage('以上就是我为你的解读。如果你还有其他问题，欢迎继续咨询。');
+    chatState.isWaitingResponse = false;
+    showInputArea();
+    enableInput();
+    return;
+  }
+  
+  const reading = readings[index];
+  const fullText = `**${reading.title}**\n\n${reading.content}`;
+  
+  // 流式输出当前段
+  await typewriterMessage(fullText);
+  
+  // 输出完成，显示"继续"按钮
+  chatState.currentReadingIndex++;
+  showContinueButton();
+}
+
+// 打字机效果（逐字显示）
+async function typewriterMessage(text) {
   const messagesList = document.getElementById('messagesList');
   if (!messagesList) return;
+  
+  // 禁用输入框
+  disableInput();
+  hideInputArea();
   
   const messageDiv = document.createElement('div');
   messageDiv.className = 'message-item ai-message';
   
-  messageDiv.innerHTML = `
-    <div class="message-avatar">
-      <div class="avatar-circle">
-        <span style="font-size: 20px;">🔮</span>
-      </div>
-    </div>
-    <div class="message-content">
-      <div class="message-bubble">
-        <p class="typewriter-text"></p>
-      </div>
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = 'message-avatar';
+  avatarDiv.innerHTML = `
+    <div class="avatar-circle">
+      <span style="font-size: 20px;">🔮</span>
     </div>
   `;
+  
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'message-content';
+  
+  const bubbleDiv = document.createElement('div');
+  bubbleDiv.className = 'message-bubble';
+  
+  const textP = document.createElement('p');
+  textP.className = 'typewriter-text';
+  
+  bubbleDiv.appendChild(textP);
+  contentDiv.appendChild(bubbleDiv);
+  messageDiv.appendChild(avatarDiv);
+  messageDiv.appendChild(contentDiv);
   
   messagesList.appendChild(messageDiv);
   scrollToBottom();
   
-  const textElement = messageDiv.querySelector('.typewriter-text');
-  
-  // 将Markdown格式的文本转换为HTML
-  const formattedText = text
+  // 将Markdown格式的文本转换为HTML，但保持原始文本用于逐字显示
+  const htmlText = text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>');
   
-  // 简化版：直接显示（真实项目中可以逐字显示）
-  textElement.innerHTML = formattedText;
+  // 逐字显示
+  let currentHTML = '';
+  const chars = htmlText.split('');
+  
+  for (let i = 0; i < chars.length; i++) {
+    currentHTML += chars[i];
+    
+    // 处理HTML标签，一次性显示整个标签
+    if (chars[i] === '<') {
+      while (i < chars.length && chars[i] !== '>') {
+        i++;
+        currentHTML += chars[i];
+      }
+    }
+    
+    textP.innerHTML = currentHTML;
+    
+    // 每个字符之间的延迟（30ms，可调整速度）
+    await new Promise(resolve => setTimeout(resolve, 30));
+    
+    // 每输出几个字符就滚动一次
+    if (i % 5 === 0) {
+      scrollToBottom();
+    }
+  }
   
   scrollToBottom();
-  
-  // 模拟打字延迟
-  await new Promise(resolve => setTimeout(resolve, 800));
 }
 
 // 显示/隐藏输入区域
@@ -681,7 +735,13 @@ function showBottomActions() {
     bottomActions.id = 'bottomActions';
     bottomActions.className = 'bottom-actions';
     
-    // 创建"去抽牌"按钮
+    // 创建"重新输入"按钮（放在左边）
+    const reinputBtn = document.createElement('button');
+    reinputBtn.className = 'btn-action btn-reinput';
+    reinputBtn.textContent = '重新输入';
+    reinputBtn.onclick = handleReinput;
+    
+    // 创建"去抽牌"按钮（放在右边）
     const drawBtn = document.createElement('button');
     drawBtn.className = 'btn-action btn-draw';
     drawBtn.onclick = handleDrawCards;
@@ -693,14 +753,9 @@ function showBottomActions() {
     drawBtn.appendChild(badge);
     drawBtn.appendChild(document.createTextNode('去抽牌'));
     
-    // 创建"重新输入"按钮
-    const reinputBtn = document.createElement('button');
-    reinputBtn.className = 'btn-action btn-reinput';
-    reinputBtn.textContent = '重新输入';
-    reinputBtn.onclick = handleReinput;
-    
-    bottomActions.appendChild(drawBtn);
+    // 注意顺序：重新输入在左，去抽牌在右
     bottomActions.appendChild(reinputBtn);
+    bottomActions.appendChild(drawBtn);
     
     document.querySelector('.container').appendChild(bottomActions);
   }
@@ -712,6 +767,84 @@ function hideBottomActions() {
   const bottomActions = document.getElementById('bottomActions');
   if (bottomActions) {
     bottomActions.style.display = 'none';
+  }
+}
+
+// 显示"继续"按钮
+function showContinueButton() {
+  hideInputArea();
+  
+  let continueBtn = document.getElementById('continueButton');
+  
+  if (!continueBtn) {
+    continueBtn = document.createElement('div');
+    continueBtn.id = 'continueButton';
+    continueBtn.className = 'continue-button-container';
+    
+    const btn = document.createElement('button');
+    btn.className = 'btn-continue';
+    btn.textContent = '继续';
+    btn.onclick = handleContinueClick;
+    
+    continueBtn.appendChild(btn);
+    
+    document.querySelector('.container').appendChild(continueBtn);
+  }
+  
+  continueBtn.style.display = 'flex';
+}
+
+// 隐藏"继续"按钮
+function hideContinueButton() {
+  const continueBtn = document.getElementById('continueButton');
+  if (continueBtn) {
+    continueBtn.style.display = 'none';
+  }
+}
+
+// 点击"继续"按钮
+async function handleContinueClick() {
+  console.log('埋点: 点击继续按钮');
+  
+  hideContinueButton();
+  
+  // 输出下一段解读
+  await outputNextReading();
+}
+
+// 禁用输入框
+function disableInput() {
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+  
+  if (input) {
+    input.disabled = true;
+    input.style.opacity = '0.5';
+    input.style.cursor = 'not-allowed';
+  }
+  
+  if (sendBtn) {
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '0.5';
+    sendBtn.style.cursor = 'not-allowed';
+  }
+}
+
+// 启用输入框
+function enableInput() {
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+  
+  if (input) {
+    input.disabled = false;
+    input.style.opacity = '1';
+    input.style.cursor = 'text';
+  }
+  
+  if (sendBtn) {
+    sendBtn.disabled = false;
+    sendBtn.style.opacity = '1';
+    sendBtn.style.cursor = 'pointer';
   }
 }
 
