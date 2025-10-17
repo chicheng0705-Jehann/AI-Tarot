@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>准了 - AI解读</title>
+  <title>准了 - AI咨询</title>
   <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" href="css/ai-reading.css">
 </head>
@@ -11,20 +11,55 @@
   <div class="container">
     <!-- 顶部导航栏 -->
     <div class="navbar">
-      <div class="navbar-back"></div>
-      <div class="navbar-title">塔罗</div>
-      <div class="navbar-action"></div>
+      <div class="navbar-back" onclick="goBack()">‹</div>
+      <div class="navbar-title" id="navTitle">准了小精灵</div>
+      <div class="navbar-actions">
+        <!-- 模式选择器 -->
+        <div class="mode-selector" id="modeSelector" onclick="toggleModeMenu()">
+          <span id="currentMode">自动匹配</span>
+          <span class="dropdown-icon">▼</span>
+        </div>
+        <!-- 时钟按钮 -->
+        <button class="btn-history" onclick="showHistory()" title="历史记录">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 模式选择下拉菜单 -->
+    <div class="mode-menu" id="modeMenu" style="display: none;">
+      <div class="mode-option" data-mode="auto" onclick="selectMode('auto')">
+        <span class="mode-icon">✨</span>
+        <span>自动匹配</span>
+      </div>
+      <div class="mode-option" data-mode="tarot" onclick="selectMode('tarot')">
+        <span class="mode-icon">🔮</span>
+        <span>塔罗占卜</span>
+      </div>
+      <div class="mode-option" data-mode="astro" onclick="selectMode('astro')">
+        <span class="mode-icon">⭐</span>
+        <span>星盘咨询</span>
+        <span class="badge-coming">敬请期待</span>
+      </div>
+      <div class="mode-option" data-mode="bazi" onclick="selectMode('bazi')">
+        <span class="mode-icon">☯</span>
+        <span>八字咨询</span>
+        <span class="badge-coming">敬请期待</span>
+      </div>
     </div>
 
     <!-- 主内容 -->
     <div class="main-content">
       <!-- AI头像区域 -->
       <div class="ai-avatar-section">
-        <div class="ai-large-avatar">
-          <span class="avatar-emoji">🔮</span>
+        <div class="ai-large-avatar" id="aiAvatar">
+          <span class="avatar-emoji" id="avatarEmoji">🧚</span>
         </div>
-        <h2 class="ai-name">准了塔罗师</h2>
-        <p class="ai-subtitle">帮你解答/常见问题/答疑解惑/带给你宽慰/帮助</p>
+        <h2 class="ai-name" id="aiName">准了小精灵</h2>
+        <p class="ai-subtitle" id="aiSubtitle">帮你解答/常见问题/答疑解惑/带给你宽慰/帮助</p>
       </div>
 
       <!-- 大输入框区域 -->
@@ -40,22 +75,30 @@
           <div class="char-count">
             <span id="charCount">0</span>/200
           </div>
+          <!-- 发送按钮（在输入框内右下角） -->
+          <button class="btn-send-inline" id="submitBtn" onclick="handleSubmit()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
         </div>
         
-        <!-- 发送按钮 -->
-        <button class="btn-submit" id="submitBtn">
-          <span>问询</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-          </svg>
+        <!-- 热门提问按钮（居中） -->
+        <button class="btn-hot-questions" id="hotQuestionsBtn" onclick="toggleHotQuestions()">
+          热门提问
         </button>
       </div>
+    </div>
 
-      <!-- 快捷问题提示 -->
-      <div class="quick-hints">
-        <p class="hint-title">你可能想问我</p>
-        <div class="hints-grid" id="hintsGrid">
-          <!-- 动态加载快捷问题 -->
+    <!-- 热门问题浮层 -->
+    <div class="hot-questions-overlay" id="hotQuestionsOverlay" style="display: none;" onclick="closeHotQuestions()">
+      <div class="hot-questions-panel" onclick="event.stopPropagation()">
+        <div class="panel-header">
+          <h3>热门问题</h3>
+          <button class="btn-close" onclick="closeHotQuestions()">✕</button>
+        </div>
+        <div class="questions-list" id="questionsList">
+          <!-- 动态加载 -->
         </div>
       </div>
     </div>

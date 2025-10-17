@@ -35,11 +35,23 @@ async function initChat() {
     // 渲染欢迎消息（包含大头像、开场白、预置问题）
     renderWelcomeMessage();
     
-    // 如果有预填问题，只填充不提交
-    if (question && mode === 'prefill') {
-      setTimeout(() => {
-        fillQuestion(question);
-      }, 500);
+    // 处理不同模式
+    if (question) {
+      if (mode === 'prefill') {
+        // 预填充模式：只填充不提交
+        setTimeout(() => {
+          fillQuestion(question);
+        }, 500);
+      } else if (mode === 'auto_submit') {
+        // 自动提交模式：填充并自动提交
+        setTimeout(() => {
+          const input = document.getElementById('chatInput');
+          if (input) {
+            input.value = question;
+          }
+          sendUserMessage(question);
+        }, 800);
+      }
     }
     
   } catch (error) {
