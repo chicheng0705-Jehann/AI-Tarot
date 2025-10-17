@@ -61,11 +61,11 @@ function escapeHtml(text) {
 function handleQuestionClick(spreadId, question) {
   console.log('埋点: 点击热门问题', { spreadId, question });
   
-  // 跳转到对话框，带上牌阵ID和问题
+  // 跳转到对话框，带上牌阵ID和问题（但不自动提交）
   navigateTo('chat.html', {
     spreadId: spreadId,
     question: question,
-    mode: 'quick' // 快捷提问模式
+    mode: 'prefill' // 预填充模式（不自动提交）
   });
 }
 

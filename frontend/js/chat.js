@@ -16,11 +16,7 @@ let quickQuestionsData = {};
 // 初始化
 async function initChat() {
   try {
-    // 加载数据
-    spreadsData = await loadJSON('../data/spreads.json');
-    quickQuestionsData = await loadJSON('../data/quick-questions.json');
-    
-    // 检查URL参数
+    // 检查URL参数（先获取参数）
     const spreadId = getUrlParameter('spreadId');
     const question = getUrlParameter('question');
     const mode = getUrlParameter('mode');
@@ -29,13 +25,21 @@ async function initChat() {
       chatState.currentSpreadId = spreadId;
     }
     
+    // 加载数据
+    spreadsData = await loadJSON('../data/spreads.json');
+    quickQuestionsData = await loadJSON('../data/quick-questions.json');
+    
+    // 数据加载完成后，渲染界面
+    // 根据是否有spreadId渲染不同的欢迎消息
+    renderWelcomeMessage();
+    
     // 渲染快捷问题
     renderQuickQuestions();
     
-    // 如果有预填问题，自动发送
-    if (question && mode === 'quick') {
+    // 如果有预填问题，只填充不提交
+    if (question && mode === 'prefill') {
       setTimeout(() => {
-        handleQuickQuestionClick(question);
+        fillQuestion(question);
       }, 500);
     }
     
@@ -45,10 +49,54 @@ async function initChat() {
   }
 }
 
-// 渲染快捷问题
+// 渲染欢迎消息
+function renderWelcomeMessage() {
+  const messagesList = document.getElementById('messagesList');
+  if (!messagesList) return;
+  
+  // 清空现有消息
+  messagesList.innerHTML = '';
+  
+  let welcomeText = '';
+  let spread = null;
+  
+  // 如果有指定牌阵，显示牌阵介绍
+  if (chatState.currentSpreadId) {
+    spread = spreadsData.find(s => s.id === chatState.currentSpreadId);
+    if (spread) {
+      welcomeText = spread.description;
+    }
+  }
+  
+  // 否则显示默认欢迎语
+  if (!welcomeText) {
+    welcomeText = 'Hi，我是准了AI塔罗师～\n\n请告诉我你想咨询的问题，我会为你挑选合适的牌阵并进行解读。';
+  }
+  
+  // 添加欢迎消息
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'message-item ai-message welcome-message';
+  
+  messageDiv.innerHTML = `
+    <div class="welcome-avatar">
+      <div class="avatar-circle-large">
+        <span style="font-size: 48px;">🔮</span>
+      </div>
+    </div>
+    <div class="message-content">
+      <div class="message-bubble welcome-bubble">
+        <p>${welcomeText.replace(/\n/g, '</p><p>')}</p>
+      </div>
+    </div>
+  `;
+  
+  messagesList.appendChild(messageDiv);
+}
+
+// 渲染快捷问题（在气泡内）
 function renderQuickQuestions() {
-  const container = document.getElementById('quickQuestionsGrid');
-  if (!container) return;
+  const messagesList = document.getElementById('messagesList');
+  if (!messagesList) return;
   
   let questions = quickQuestionsData.default || [];
   
@@ -60,15 +108,72 @@ function renderQuickQuestions() {
     }
   }
   
-  container.innerHTML = questions.map(q => `
-    <button class="quick-question-btn" onclick="handleQuickQuestionClick('${escapeHtml(q)}')">${q}</button>
-  `).join('');
+  // 创建快捷问题气泡
+  const quickQuestionsDiv = document.createElement('div');
+  quickQuestionsDiv.className = 'message-item ai-message';
+  quickQuestionsDiv.id = 'quickQuestionsMessage';
+  
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = 'message-avatar';
+  avatarDiv.innerHTML = `
+    <div class="avatar-circle">
+      <span style="font-size: 20px;">🔮</span>
+    </div>
+  `;
+  
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'message-content';
+  
+  const bubbleDiv = document.createElement('div');
+  bubbleDiv.className = 'message-bubble';
+  
+  const titleP = document.createElement('p');
+  titleP.className = 'quick-title';
+  titleP.textContent = '你可能想问我';
+  
+  const questionsContainer = document.createElement('div');
+  questionsContainer.className = 'quick-questions-in-bubble';
+  
+  // 为每个问题创建按钮
+  questions.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-question-btn-bubble';
+    btn.textContent = q;
+    btn.onclick = function() {
+      fillQuestion(q);
+    };
+    questionsContainer.appendChild(btn);
+  });
+  
+  bubbleDiv.appendChild(titleP);
+  bubbleDiv.appendChild(questionsContainer);
+  contentDiv.appendChild(bubbleDiv);
+  quickQuestionsDiv.appendChild(avatarDiv);
+  quickQuestionsDiv.appendChild(contentDiv);
+  
+  messagesList.appendChild(quickQuestionsDiv);
+  scrollToBottom();
 }
 
-// 处理快捷问题点击
-function handleQuickQuestionClick(question) {
-  console.log('埋点: 点击快捷问题', { question });
-  sendUserMessage(question);
+// 填充问题到输入框（不自动提交）
+function fillQuestion(question) {
+  console.log('埋点: 点击快捷问题（填充）', { question });
+  
+  const input = document.getElementById('chatInput');
+  if (input) {
+    input.value = question;
+    input.focus();
+    
+    // 自动调整高度
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+  }
+  
+  // 隐藏快捷问题消息
+  const quickMsg = document.getElementById('quickQuestionsMessage');
+  if (quickMsg) {
+    quickMsg.style.display = 'none';
+  }
 }
 
 // 发送用户消息
@@ -83,8 +188,11 @@ function sendUserMessage(text) {
     return;
   }
   
-  // 隐藏快捷问题
-  hideQuickQuestions();
+  // 隐藏快捷问题消息
+  const quickMsg = document.getElementById('quickQuestionsMessage');
+  if (quickMsg) {
+    quickMsg.style.display = 'none';
+  }
   
   // 添加用户消息
   addMessage('user', text);
@@ -198,30 +306,53 @@ function addSpreadMatchMessage(spread) {
   
   const messageDiv = document.createElement('div');
   messageDiv.className = 'message-item ai-message';
+  messageDiv.id = 'spreadMatchMessage';
   
-  messageDiv.innerHTML = `
-    <div class="message-avatar">
-      <div class="avatar-circle">
-        <span style="font-size: 20px;">🔮</span>
-      </div>
-    </div>
-    <div class="message-content">
-      <div class="message-bubble">
-        <p>根据你的问题，我为你挑选了<strong>「${spread.name}」</strong>牌阵。</p>
-        <div class="spread-match-card">
-          <div class="spread-match-title">${spread.name}</div>
-          <div class="spread-match-desc">${spread.description}</div>
-        </div>
-        <div class="message-actions">
-          <button class="action-btn primary" onclick="handleDrawCards()">去抽牌</button>
-          <button class="action-btn" onclick="openSpreadSelector()">换个牌阵</button>
-          <button class="action-btn" onclick="handleReinput()">重新输入问题</button>
-        </div>
-      </div>
+  // 创建头像
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = 'message-avatar';
+  avatarDiv.innerHTML = `
+    <div class="avatar-circle">
+      <span style="font-size: 20px;">🔮</span>
     </div>
   `;
   
+  // 创建内容
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'message-content';
+  
+  // 创建气泡
+  const bubbleDiv = document.createElement('div');
+  bubbleDiv.className = 'message-bubble';
+  
+  const p1 = document.createElement('p');
+  p1.innerHTML = `针对你的问题，我为你选择的牌阵是【<strong>${spread.name}</strong>】`;
+  
+  const p2 = document.createElement('p');
+  p2.className = 'spread-match-desc';
+  p2.textContent = spread.description;
+  
+  bubbleDiv.appendChild(p1);
+  bubbleDiv.appendChild(p2);
+  
+  // 创建"换个牌阵"按钮
+  const changeBtn = document.createElement('button');
+  changeBtn.className = 'btn-change-spread';
+  changeBtn.textContent = '⇄ 换个牌阵';
+  changeBtn.onclick = openSpreadSelector;
+  
+  contentDiv.appendChild(bubbleDiv);
+  contentDiv.appendChild(changeBtn);
+  
+  messageDiv.appendChild(avatarDiv);
+  messageDiv.appendChild(contentDiv);
+  
   messagesList.appendChild(messageDiv);
+  
+  // 隐藏输入区域，显示底部操作按钮
+  hideInputArea();
+  showBottomActions();
+  
   scrollToBottom();
 }
 
@@ -277,12 +408,28 @@ function selectSpread(spreadId) {
 function handleReinput() {
   console.log('埋点: 点击重新输入问题');
   
-  addMessage('ai', '请重新输入你的问题。');
-  chatState.currentSpreadId = null;
-  chatState.currentQuestion = null;
+  // 不发送AI消息
+  // 隐藏底部操作按钮
+  hideBottomActions();
   
-  // 显示快捷问题
-  showQuickQuestions();
+  // 显示输入区域
+  showInputArea();
+  
+  // 将之前的问题填充到输入框
+  const input = document.getElementById('chatInput');
+  if (input && chatState.currentQuestion) {
+    input.value = chatState.currentQuestion;
+    input.focus();
+    
+    // 自动调整高度
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+    
+    // 尝试唤起键盘（移动端）
+    if ('ontouchstart' in window) {
+      input.click();
+    }
+  }
 }
 
 // 去抽牌
@@ -297,6 +444,9 @@ async function handleDrawCards() {
     return;
   }
   
+  // 隐藏底部操作按钮
+  hideBottomActions();
+  
   // 显示抽牌动画
   showDrawingAnimation();
   
@@ -305,6 +455,9 @@ async function handleDrawCards() {
   
   // 隐藏抽牌动画
   hideDrawingAnimation();
+  
+  // 显示输入区域
+  showInputArea();
   
   // 模拟抽牌结果
   const spread = spreadsData.find(s => s.id === chatState.currentSpreadId);
@@ -503,18 +656,62 @@ async function typewriterEffect(text) {
   await new Promise(resolve => setTimeout(resolve, 800));
 }
 
-// 显示/隐藏快捷问题
-function hideQuickQuestions() {
-  const container = document.getElementById('quickQuestions');
-  if (container) {
-    container.style.display = 'none';
+// 显示/隐藏输入区域
+function hideInputArea() {
+  const inputArea = document.getElementById('inputArea');
+  if (inputArea) {
+    inputArea.style.display = 'none';
   }
 }
 
-function showQuickQuestions() {
-  const container = document.getElementById('quickQuestions');
-  if (container) {
-    container.style.display = 'block';
+function showInputArea() {
+  const inputArea = document.getElementById('inputArea');
+  if (inputArea) {
+    inputArea.style.display = 'block';
+  }
+}
+
+// 显示/隐藏底部操作按钮
+function showBottomActions() {
+  let bottomActions = document.getElementById('bottomActions');
+  
+  if (!bottomActions) {
+    // 创建底部操作按钮容器
+    bottomActions = document.createElement('div');
+    bottomActions.id = 'bottomActions';
+    bottomActions.className = 'bottom-actions';
+    
+    // 创建"去抽牌"按钮
+    const drawBtn = document.createElement('button');
+    drawBtn.className = 'btn-action btn-draw';
+    drawBtn.onclick = handleDrawCards;
+    
+    const badge = document.createElement('span');
+    badge.className = 'cost-badge';
+    badge.textContent = '💎 消耗1道具';
+    
+    drawBtn.appendChild(badge);
+    drawBtn.appendChild(document.createTextNode('去抽牌'));
+    
+    // 创建"重新输入"按钮
+    const reinputBtn = document.createElement('button');
+    reinputBtn.className = 'btn-action btn-reinput';
+    reinputBtn.textContent = '重新输入';
+    reinputBtn.onclick = handleReinput;
+    
+    bottomActions.appendChild(drawBtn);
+    bottomActions.appendChild(reinputBtn);
+    
+    document.querySelector('.container').appendChild(bottomActions);
+  }
+  
+  bottomActions.style.display = 'flex';
+}
+
+function hideBottomActions() {
+  const bottomActions = document.getElementById('bottomActions');
+  if (bottomActions) {
+    bottomActions.style.display = 'none';
   }
 }
 

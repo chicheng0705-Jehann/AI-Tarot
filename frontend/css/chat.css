@@ -133,41 +133,95 @@ body {
   line-height: 1.5;
 }
 
-/* 操作按钮组 */
-.message-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
-  flex-wrap: wrap;
-}
-
-.action-btn {
-  flex: 1;
-  min-width: 100px;
-  padding: var(--spacing-sm) var(--spacing-md);
+/* 换个牌阵按钮（紧挨气泡下方） */
+.btn-change-spread {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  background-color: white;
+  border: 1px solid var(--divider);
   border-radius: var(--radius-md);
   font-size: 13px;
-  font-weight: 500;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid var(--divider);
+}
+
+.btn-change-spread:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.spread-match-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: var(--spacing-sm);
+}
+
+/* 底部操作按钮（去抽牌 + 重新输入） */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 750px;
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: linear-gradient(to top, white 80%, transparent);
+  z-index: 90;
+  padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+  justify-content: center;
+}
+
+.btn-action {
+  flex: 1;
+  max-width: 180px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-round);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  position: relative;
+}
+
+.btn-draw {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-draw:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-reinput {
   background-color: white;
   color: var(--text-primary);
+  border: 1px solid var(--divider);
 }
 
-.action-btn.primary {
-  background-color: var(--primary-color);
+.btn-reinput:hover {
+  background-color: var(--bg-secondary);
+}
+
+.cost-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #FF6B9D;
   color: white;
-  border-color: var(--primary-color);
-}
-
-.action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.action-btn:active {
-  transform: translateY(0);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.3);
 }
 
 /* 抽牌结果卡片 */
@@ -218,6 +272,71 @@ body {
   font-weight: 600;
 }
 
+/* 欢迎消息样式 */
+.welcome-message {
+  text-align: center;
+  margin: var(--spacing-xl) 0;
+}
+
+.welcome-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.avatar-circle-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.welcome-bubble {
+  text-align: center;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+/* 快捷问题在气泡内 */
+.quick-title {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.quick-questions-in-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-md);
+}
+
+.quick-question-btn-bubble {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-question-btn-bubble:hover {
+  background-color: rgba(124, 77, 255, 0.05);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.quick-question-btn-bubble:active {
+  transform: scale(0.98);
+}
+
 /* 输入区域 */
 .chat-input-area {
   position: fixed;
@@ -230,45 +349,6 @@ body {
   border-top: 1px solid var(--divider);
   z-index: 90;
   padding-bottom: env(safe-area-inset-bottom);
-}
-
-.quick-questions {
-  padding: var(--spacing-md) var(--spacing-md) 0;
-}
-
-.quick-question-label {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-sm);
-}
-
-.quick-questions-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-}
-
-.quick-question-btn {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--divider);
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  color: var(--text-primary);
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.quick-question-btn:hover {
-  background-color: rgba(124, 77, 255, 0.05);
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-}
-
-.quick-question-btn:active {
-  transform: scale(0.98);
 }
 
 .input-wrapper {
